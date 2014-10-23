@@ -4,12 +4,12 @@ set -x
 MODE="${MODE:-clean}"
 PLATFORM="${PLATFORM:-SL6}"
 
-mkdir -p $PWD/docker_storm/storage
+mkdir -p /tmp/docker_storm/storage
 
 # run StoRM deployment
 docker run -d -e "MODE=${MODE}" -e "PLATFORM=${PLATFORM}" \
   -h docker-storm.cnaf.infn.it \
-  -v $PWD/docker_storm/storage:/storage:rw \
+  -v /tmp/docker_storm/storage:/storage:rw \
   -v /etc/localtime:/etc/localtime:ro \
   --name storm-deploy \
   centos6/storm-deploy:1.0 \
