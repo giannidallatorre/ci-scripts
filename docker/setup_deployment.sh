@@ -4,10 +4,17 @@ set -x
 MODE="${MODE:-clean}"
 PLATFORM="${PLATFORM:-SL6}"
 
-git clone https://github.com/dandreotti/docker-scripts.git
-cd storm-deployment-test
-
 mkdir -p $PWD/docker_storm/storage
-mkdir -p $PWD/docker_storm/logs
 
-docker run -e "MODE=${MODE}" -e "PLATFORM=${PLATFORM}" -h docker-storm.cnaf.infn.it -v $PWD/docker_storm/storage:/storage:rw -v $PWD/docker_storm/logs:/var/log/storm:rw -v /etc/localtime:/etc/localtime:ro --name storm-deploy centos6/storm-deploy:1.0
+# run StoRM deployment
+docker run -d -e "MODE=${MODE}" -e "PLATFORM=${PLATFORM}" -h docker-storm.cnaf.infn.it -v $PWD/docker_storm/storage:/storage:rw -v /etc/localtime:/etc/localtime:ro --name storm-deploy centos6/storm-deploy:1.0 docker run -d -e "MODE=clean" -e "PLATFORM=SL6" -h docker-storm.cnaf.infn.it -t -i  -v ~/docker_storm/storage:/storage:rw -v /etc/localtime:/etc/localtime:ro --name storm-deploy centos6/storm-deploy:1.0 /bin/sh deploy.sh
+
+# run StoRM testsuite when deployment is over
+docker run --link storm-deploy:docker-storm.cnaf.infn.it --volumes-from storm-deploy -v /etc/localtime:/etc/localtime:ro --name storm-ts centos6/storm-ts:1.0
+
+# copy StoRM logs 
+docker cp storm-deploy:/var/log/storm .
+
+# remove containers
+docker rm -f storm-deploy
+docker rm -f storm-ts
