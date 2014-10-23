@@ -15,6 +15,9 @@ sleep 3
 # run StoRM testsuite when deployment is over
 docker run --link storm-deploy:docker-storm.cnaf.infn.it --volumes-from storm-deploy -v /etc/localtime:/etc/localtime:ro --name storm-ts-linked centos6/storm-ts:1.0
 
+# copy testsuite reports 
+docker cp storm-ts-linked:/home/tester/storm-testsuite/reports .
+
 # copy StoRM logs 
 docker cp storm-deploy:/var/log/storm .
 
