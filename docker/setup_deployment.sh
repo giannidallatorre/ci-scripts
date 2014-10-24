@@ -3,11 +3,12 @@ set -x
 
 MODE="${MODE:-clean}"
 PLATFORM="${PLATFORM:-SL6}"
+STORM_REPO="${STORM_REPO:-http://radiohead.cnaf.infn.it:9999/view/REPOS/job/repo_storm_develop_SL6/lastSuccessfulBuild/artifact/storm_develop_sl6.repo}"
 
 mkdir -p /tmp/docker_storm/storage
 
 # run StoRM deployment
-docker run -d -e "MODE=${MODE}" -e "PLATFORM=${PLATFORM}" \
+docker run -d -e "STORM_REPO=${STORM_REPO}" -e "MODE=${MODE}" -e "PLATFORM=${PLATFORM}" \
   -h docker-storm.cnaf.infn.it \
   -v /tmp/docker_storm/storage:/storage:rw \
   -v /etc/localtime:/etc/localtime:ro \
