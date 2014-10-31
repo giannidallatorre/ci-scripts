@@ -41,7 +41,7 @@ docker run -e "VOMSREPO=${VOMSREPO}" \
   -v /etc/localtime:/etc/localtime:ro \
   --name voms-ts \
   --link voms-server:voms-server \
-  centos6/voms-ts:1.0 \
+  centos6/voms-ts:1.1 \
   /bin/sh /setup_clients.sh
 
 #  --volumes-from voms-server \
