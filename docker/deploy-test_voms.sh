@@ -48,10 +48,10 @@ docker run -e "VOMSREPO=${VOMSREPO}" \
 
 # copy testsuite reports
 mkdir voms-ts_reports
-docker cp voms-ts:/home/voms/voms-testsuite/reports voms-ts_reports/
+docker cp voms-ts:/home/voms/voms-testsuite/reports .
 
-# copy VOMS logs 
-docker cp voms-server:/var/log/voms .
+# copy VOMS server logs 
+docker cp voms-server:/var/log/voms voms-server_logs
 
 # get deployment log
 docker logs --tail="all" voms-server &> voms-server-deployment.log
