@@ -13,7 +13,7 @@ deploy_id=`docker run -d -e "STORM_REPO=${STORM_REPO}" -e "MODE=${MODE}" -e "PLA
   -h docker-storm.cnaf.infn.it \
   -v $storage_dir:/storage:rw \
   -v /etc/localtime:/etc/localtime:ro \
-  centos6/storm-deploy:1.0 \
+  italiangrid:storm-deployment-test \
   /bin/sh deploy.sh`
 
 # get names for deployment and testsuite containers
@@ -24,7 +24,7 @@ testsuite_name="ts-linked-to-$deployment_name"
 docker run --link $deployment_name:docker-storm.cnaf.infn.it \
   -v /etc/localtime:/etc/localtime:ro \
   --name $testsuite_name \
-  centos6/storm-ts:1.0
+  italiangrid:storm-testsuite
 
 # copy testsuite reports 
 docker cp $testsuite_name:/home/tester/storm-testsuite/reports .
