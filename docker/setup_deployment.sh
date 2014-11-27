@@ -21,7 +21,7 @@ deployment_name=`docker inspect -f "{{ .Name }}" $deploy_id|cut -c2-`
 testsuite_name="ts-linked-to-$deployment_name"
 
 # run StoRM testsuite when deployment is over
-docker run --link $deployment_name:docker-storm.cnaf.infn.it \
+docker run --rm=true --link $deployment_name:docker-storm.cnaf.infn.it \
   -v /etc/localtime:/etc/localtime:ro \
   --name $testsuite_name \
   italiangrid:storm-testsuite
