@@ -28,7 +28,7 @@ docker run -d -P -e "MODE=${MODE}" \
   centos6/voms-server:1.0
 
 # run VOMS testsuite when deployment is over
-docker run -e "VOMSREPO=${VOMSREPO}" \
+docker run --rm=true -e "VOMSREPO=${VOMSREPO}" \
   -e "VO1=${VO1}" \
   -e "VO1_HOST=${VO1_HOST}" \
   -e "VO1_ISSUER=${VO1_ISSUER}" \
