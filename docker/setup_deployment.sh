@@ -37,5 +37,4 @@ docker logs --tail="all" $deployment_name &> storm-deployment.log
 
 # remove containers
 docker rm -f $deployment_name
-docker rm -f $testsuite_name
 
