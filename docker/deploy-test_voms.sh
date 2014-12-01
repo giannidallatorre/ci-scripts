@@ -58,4 +58,3 @@ docker logs --tail="all" voms-server &> voms-server-deployment.log
 
 # remove containers
 docker rm -f voms-server
-docker rm -f voms-ts
