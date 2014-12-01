@@ -19,13 +19,17 @@ VO2_PORT=${VO2_PORT:-15000}
 mkdir -p /tmp/docker_voms/storage
 
 # run VOMS deployment
-docker run -d -P -e "MODE=${MODE}" \
+deploy_id=`docker run -d -P -e "MODE=${MODE}" \
   -e "PLATFORM=${PLATFORM}" \
   -h voms-server \
   -v /etc/localtime:/etc/localtime:ro \
   -v /tmp/docker_voms/storage:/storage:rw \
   --name voms-server \
-  centos6/voms-server:1.0
+  centos6/voms-server:1.0`
+
+# get names for deployment and testsuite containers
+deployment_name=`docker inspect -f "{{ .Name }}" $deploy_id|cut -c2-`
+testsuite_name="ts-linked-to-$deployment_name"
 
 # run VOMS testsuite when deployment is over
 docker run -e "VOMSREPO=${VOMSREPO}" \
@@ -39,8 +43,8 @@ docker run -e "VOMSREPO=${VOMSREPO}" \
   -e "VO2_PORT=${VO2_PORT}" \
   -h voms-ts \
   -v /etc/localtime:/etc/localtime:ro \
-  --name voms-ts \
-  --link voms-server:voms-server \
+  --name $testsuite_name \
+  --link $deployment_name:voms-server \
   centos6/voms-ts:1.1 \
   /bin/sh /setup_clients.sh
 
@@ -48,14 +52,14 @@ docker run -e "VOMSREPO=${VOMSREPO}" \
 
 # copy testsuite reports
 mkdir voms-ts_reports
-docker cp voms-ts:/home/voms/voms-testsuite/reports .
+docker cp $testsuite_name:/home/voms/voms-testsuite/reports .
 
 # copy VOMS server logs 
-docker cp voms-server:/var/log/voms voms-server_logs
+docker cp $deployment_name:/var/log/voms voms-server_logs
 
 # get deployment log
-docker logs --tail="all" voms-server &> voms-server-deployment.log
+docker logs --tail="all" $deployment_name &> voms-server-deployment.log
 
 # remove containers
-docker rm -f voms-server
-docker rm -f voms-ts
+docker rm -f $deployment_name
+docker rm -f $testsuite_name
